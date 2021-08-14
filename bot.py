@@ -29,4 +29,4 @@ async def on_ready():
 
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over everyone"))
 
-client.run('ODc1OTEwNTU5NjcxOTIyNzE4.YRcZRw.KRsHusmTmKoWIaKx2CDo8L5qbyY')
+client.run(config.token)
