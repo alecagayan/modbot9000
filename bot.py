@@ -12,6 +12,8 @@ client = Bot(description='none', command_prefix='?', intents=intents)
 client.load_extension("cogs.dm")
 client.load_extension("cogs.kickban")
 client.load_extension("cogs.welcomer")
+client.load_extension("cogs.cooldown")
+
 
 
 

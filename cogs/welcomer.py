@@ -13,7 +13,9 @@ class Welcomer(commands.Cog):
 
         print('member')
 
-        role = discord.utils.get(member.guild.roles, name = "Banned")
+        banrole = discord.utils.get(member.guild.roles, name = "Banned")
+        cooldownrole = discord.utils.get(member.guild.roles, name = "cooldown")
+
 
         with open('./data/json/bans.json') as f:
             data = json.load(f)
@@ -21,7 +23,18 @@ class Welcomer(commands.Cog):
         for userid in data["banned-members"]:
             try:
                 if member.id == userid:
-                    await member.add_roles(role)
+                    await member.add_roles(banrole)
+
+            except:
+                pass
+
+        with open('./data/json/cooldown.json') as f:
+            data = json.load(f)
+        
+        for userid in data["cooldown-members"]:
+            try:
+                if member.id == userid:
+                    await member.add_roles(cooldownrole)
 
             except:
                 pass
