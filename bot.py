@@ -22,7 +22,8 @@ async def on_ready():
     print("Bot online!\n")
     print("Discord.py API version:", discord.__version__)
     print("Python version:", platform.python_version())
-    print("Running on:", platform.system(), platform.release(), "(" + os.name + ")")
+    print("Running on:", platform.system(),
+          platform.release(), "(" + os.name + ")")
     print("Name : {}".format(client.user.name))
     print("Client ID : {}".format(client.user.id))
     print("Currently active on " + str(len(client.guilds)) + " server(s).\n")
