@@ -10,7 +10,7 @@ class Dm(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
 
-        reportchannel = self.bot.get_channel(819286169200230412)
+        reportchannel = self.bot.get_channel(875562790528647189)
 
         def check(m):
             return m.author == message.author
