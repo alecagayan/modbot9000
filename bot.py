@@ -3,7 +3,6 @@ import config
 from discord.ext import commands
 from discord.ext.commands import Bot
 import platform
-from textblob import TextBlob
 import sqlite3
 from sqlite3 import connect
 import os
