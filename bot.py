@@ -17,6 +17,8 @@ client.load_extension("cogs.welcomer")
 client.load_extension("cogs.cooldown")
 client.load_extension("cogs.misc")
 client.load_extension("cogs.warnings")
+client.load_extension("cogs.elevate")
+
 
 @client.event
 async def on_ready():
