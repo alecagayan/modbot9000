@@ -32,7 +32,7 @@ async def on_ready():
     print("Client ID : {}".format(client.user.id))
     print("Currently active on " + str(len(client.guilds)) + " server(s).\n")
 
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, state="people DM for Help"))
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, state="DM for Help"))
 
     DB_PATH = "./data/db/database.db"
 
