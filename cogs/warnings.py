@@ -27,6 +27,7 @@ class Warnings(commands.Cog):
                 cur.execute("UPDATE warnings SET WarningCount = ? WHERE UserID = ?", ((result[0])+1, user.id))
 
 
+
         embed = discord.Embed(color=0xED4245) #Red
         embed.add_field(name=user.display_name + '#' + user.discriminator + ' has been warned!', value='_ _', inline=True)
         embed.set_footer(text='Requested on ' + str(datetime.datetime.now()))
@@ -43,15 +44,28 @@ class Warnings(commands.Cog):
         cur = db.cursor()
 
         cur.execute(f"SELECT WarningCount FROM warnings WHERE UserID = {ctx.author.id}")
-        result = cur.fetchone()
+        warningCount = cur.fetchone()
+        cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {ctx.author.id}")
+        warnings = cur.fetchone()
+        print(warnings)
 
-        if result is None:
-            result = 0
+        if warningCount is None:
+            warningCount = 0
         else:
-            result = result[0]
+            warningCount = warningCount[0]
+
+        warnings = list(warnings)
+        while len(warnings) < warningCount:
+            warnings.append('Reason not provided')
 
         embed = discord.Embed(color=0xFFD414) #Donut Yellow
-        embed.add_field(name=ctx.author.display_name + '#' + ctx.author.discriminator + ' has ' + str(result) + ' warnings!', value='_ _', inline=True)
+        t=0
+        while t < warningCount:
+            embed.add_field(name='Warning ' + str(t+1) + ': ', value=warnings[t], inline=True)
+            t+=1
+
+        print(warnings)
+
         embed.set_footer(text='Requested on ' + str(datetime.datetime.now()))
         await ctx.send(embed=embed)
 
