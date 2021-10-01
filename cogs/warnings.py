@@ -13,18 +13,31 @@ class Warnings(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def warn(self, ctx, user:discord.Member, *, reason = None):
 
+        if reason is None:
+            reason = "Reason not provided"
+
         if user is not None:
             DB_PATH = "./data/db/database.db"
 
             db = connect(DB_PATH, check_same_thread=False)
             cur = db.cursor()
+        
 
             cur.execute(f"SELECT WarningCount FROM warnings WHERE UserID = {user.id}")
             result = cur.fetchone()
+            cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {user.id}")
+            reasons = cur.fetchone()
+
+
             if result is None:
                 cur.execute("INSERT INTO warnings(UserID, WarningCount, Warnings) VALUES(?,?,?)", (user.id, 1, reason))
             if result is not None:
                 cur.execute("UPDATE warnings SET WarningCount = ? WHERE UserID = ?", ((result[0])+1, user.id))
+                cur.execute("UPDATE warnings SET Warnings = ? WHERE UserID = ?", ((''.join(reasons)+'|'+reason, user.id)))
+
+            cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {user.id}")
+            updatedreasons = cur.fetchone()
+
 
 
 
@@ -47,24 +60,19 @@ class Warnings(commands.Cog):
         warningCount = cur.fetchone()
         cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {ctx.author.id}")
         warnings = cur.fetchone()
-        print(warnings)
 
         if warningCount is None:
             warningCount = 0
         else:
             warningCount = warningCount[0]
 
-        warnings = list(warnings)
-        while len(warnings) < warningCount:
-            warnings.append('Reason not provided')
+        warningList = ''.join(warnings).split('|')
 
         embed = discord.Embed(color=0xFFD414) #Donut Yellow
         t=0
         while t < warningCount:
-            embed.add_field(name='Warning ' + str(t+1) + ': ', value=warnings[t], inline=True)
+            embed.add_field(name='Warning ' + str(t+1) + ': ', value=warningList[t], inline=True)
             t+=1
-
-        print(warnings)
 
         embed.set_footer(text='Requested on ' + str(datetime.datetime.now()))
         await ctx.send(embed=embed)
