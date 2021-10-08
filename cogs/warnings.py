@@ -4,50 +4,55 @@ from discord.ext.commands import has_permissions, MissingPermissions
 import datetime
 import sqlite3
 from sqlite3 import connect
+import json
 
 class Warnings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    @commands.has_permissions(manage_messages=True)
     async def warn(self, ctx, user:discord.Member, *, reason = None):
 
-        if reason is None:
-            reason = "Reason not provided"
+        with open('./data/json/elevated.json') as f:
+            data = json.load(f)
 
-        if user is not None:
-            DB_PATH = "./data/db/database.db"
+        if ctx.author.id in data["elevated-members"]:
 
-            db = connect(DB_PATH, check_same_thread=False)
-            cur = db.cursor()
-        
+            if reason is None:
+                reason = "Reason not provided"
 
-            cur.execute(f"SELECT WarningCount FROM warnings WHERE UserID = {user.id}")
-            result = cur.fetchone()
-            cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {user.id}")
-            reasons = cur.fetchone()
+            if user is not None:
+                DB_PATH = "./data/db/database.db"
 
+                db = connect(DB_PATH, check_same_thread=False)
+                cur = db.cursor()
+            
 
-            if result is None:
-                cur.execute("INSERT INTO warnings(UserID, WarningCount, Warnings) VALUES(?,?,?)", (user.id, 1, reason))
-            if result is not None:
-                cur.execute("UPDATE warnings SET WarningCount = ? WHERE UserID = ?", ((result[0])+1, user.id))
-                cur.execute("UPDATE warnings SET Warnings = ? WHERE UserID = ?", ((''.join(reasons)+'|'+reason, user.id)))
-
-            cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {user.id}")
-            updatedreasons = cur.fetchone()
+                cur.execute(f"SELECT WarningCount FROM warnings WHERE UserID = {user.id}")
+                result = cur.fetchone()
+                cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {user.id}")
+                reasons = cur.fetchone()
 
 
+                if result is None:
+                    cur.execute("INSERT INTO warnings(UserID, WarningCount, Warnings) VALUES(?,?,?)", (user.id, 1, reason))
+                if result is not None:
+                    cur.execute("UPDATE warnings SET WarningCount = ? WHERE UserID = ?", ((result[0])+1, user.id))
+                    cur.execute("UPDATE warnings SET Warnings = ? WHERE UserID = ?", ((''.join(reasons)+'|'+reason, user.id)))
+
+                cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {user.id}")
+                updatedreasons = cur.fetchone()
 
 
-        embed = discord.Embed(color=0xED4245) #Red
-        embed.add_field(name=user.display_name + '#' + user.discriminator + ' has been warned!', value='_ _', inline=True)
-        embed.set_footer(text='Requested on ' + str(datetime.datetime.now()))
-        await ctx.send(embed=embed)
-        db.commit()
-        cur.close()
-        db.close()
+            embed = discord.Embed(color=0xED4245) #Red
+            embed.add_field(name=user.display_name + '#' + user.discriminator + ' has been warned!', value='Reason: ' + reason, inline=True)
+            embed.set_footer(text='Requested on ' + str(datetime.datetime.now()))
+            await ctx.send(embed=embed)
+            await user.send(embed=embed)
+
+            db.commit()
+            cur.close()
+            db.close()
 
     @commands.command()
     async def warnings(self, ctx):

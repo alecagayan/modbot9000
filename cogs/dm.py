@@ -15,45 +15,47 @@ class Dm(commands.Cog):
         def check(m):
             return m.author == message.author
 
-        if not message.guild and not message.author.bot:
+        if not message.content.startswith('?'):
 
-            exclude = ['Y', 'y', 'N', 'n', '1', '2']
+            if not message.guild and not message.author.bot:
 
-            if message.content not in exclude:
-                await message.channel.send("Hey there! You're about to file the previous message as a report to the mods. **Type `Y` to continue and `N` to exit**")
-                report = message.content
+                exclude = ['Y', 'y', 'N', 'n', '1', '2']
 
-            confirm = await self.bot.wait_for('message', check=check)
-            confirmcontent = confirm.content
+                if message.content not in exclude:
+                    await message.channel.send("Hey there! You're about to file the previous message as a report to the mods. **Type `Y` to continue and `N` to exit**")
+                    report = message.content
 
-            if confirmcontent == "Y" or confirmcontent == "y":
-                await message.channel.send("Sounds good! Would you like to file your report anonymously **(`1`)** or not **(`2`)**? *If not, only server mods will know who you are.* This lets them reach out to you in the future!")
+                confirm = await self.bot.wait_for('message', check=check)
+                confirmcontent = confirm.content
 
-                anon = await self.bot.wait_for('message', check=check)
-                anoncontent = anon.content
+                if confirmcontent == "Y" or confirmcontent == "y":
+                    await message.channel.send("Sounds good! Would you like to file your report anonymously **(`1`)** or not **(`2`)**? *If not, only server mods will know who you are.* This lets them reach out to you in the future!")
 
-                if anoncontent == "1":
-                    user = "Anonymous"
+                    anon = await self.bot.wait_for('message', check=check)
+                    anoncontent = anon.content
 
-                    embed = discord.Embed(color=0xED4245) #Red
-                    embed.add_field(name=user + ' has filed a report!', value=report, inline=True)
-                    embed.set_footer(text='Filed on ' + str(datetime.datetime.now()))
-                    await reportchannel.send(embed=embed)
-                    
-                    await message.channel.send("Anonymous report sent!")
+                    if anoncontent == "1":
+                        user = "Anonymous"
 
-                if anoncontent == "2":
-                    user = message.author.display_name + '#' + message.author.discriminator
+                        embed = discord.Embed(color=0xED4245) #Red
+                        embed.add_field(name=user + ' has filed a report!', value=report, inline=True)
+                        embed.set_footer(text='Filed on ' + str(datetime.datetime.now()))
+                        await reportchannel.send(embed=embed)
+                        
+                        await message.channel.send("Anonymous report sent!")
 
-                    embed = discord.Embed(color=0xED4245) #Red
-                    embed.add_field(name=user + ' has filed a report!', value=report, inline=True)
-                    embed.set_footer(text='Filed on ' + str(datetime.datetime.now()))
-                    await reportchannel.send(embed=embed)
+                    if anoncontent == "2":
+                        user = message.author.display_name + '#' + message.author.discriminator
 
-                    await message.channel.send("Report sent!")
+                        embed = discord.Embed(color=0xED4245) #Red
+                        embed.add_field(name=user + ' has filed a report!', value=report, inline=True)
+                        embed.set_footer(text='Filed on ' + str(datetime.datetime.now()))
+                        await reportchannel.send(embed=embed)
 
-            if confirmcontent == "N" or confirmcontent == "n":
-                await message.channel.send("Your report has been *cancelled*!")
+                        await message.channel.send("Report sent!")
+
+                if confirmcontent == "N" or confirmcontent == "n":
+                    await message.channel.send("Your report has been *cancelled*!")
 
 
 def setup(bot):
