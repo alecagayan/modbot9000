@@ -64,9 +64,9 @@ class Warnings(commands.Cog):
         if user == None:
             user = ctx.author
 
-        cur.execute(f"SELECT WarningCount FROM warnings WHERE UserID = {ctx.user.id}")
+        cur.execute(f"SELECT WarningCount FROM warnings WHERE UserID = {user.id}")
         warningCount = cur.fetchone()
-        cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {ctx.user.id}")
+        cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {user.id}")
         warnings = cur.fetchone()
 
         if warningCount is None:
