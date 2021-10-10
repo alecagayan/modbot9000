@@ -126,3 +126,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+data/json/elevated.json
+data/json/bans.json
+data/db/database.db
