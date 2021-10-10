@@ -55,15 +55,18 @@ class Warnings(commands.Cog):
             db.close()
 
     @commands.command()
-    async def warnings(self, ctx):
+    async def warnings(self, ctx, user:discord.Member = None):
         DB_PATH = "./data/db/database.db"
 
         db = connect(DB_PATH, check_same_thread=False)
         cur = db.cursor()
 
-        cur.execute(f"SELECT WarningCount FROM warnings WHERE UserID = {ctx.author.id}")
+        if user == None:
+            user = ctx.author
+
+        cur.execute(f"SELECT WarningCount FROM warnings WHERE UserID = {ctx.user.id}")
         warningCount = cur.fetchone()
-        cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {ctx.author.id}")
+        cur.execute(f"SELECT Warnings FROM warnings WHERE UserID = {ctx.user.id}")
         warnings = cur.fetchone()
 
         if warningCount is None:
