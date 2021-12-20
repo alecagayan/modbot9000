@@ -83,7 +83,17 @@ class Warnings(commands.Cog):
             t+=1
 
         embed.set_footer(text='Requested on ' + str(datetime.datetime.now()))
-        await ctx.send(embed=embed)
+        #only send the embed if the user is requesting their own warnings
+        if user == ctx.author:
+            #dm the user their warnings
+            await user.send(embed=embed)
+        #if not, check if the user is elevated and send them the embed
+        else:
+            with open('./data/json/elevated.json') as f:
+                data = json.load(f)
+
+            if user.id in data["elevated-members"]:
+                await user.send(embed=embed)
 
         db.commit()
         cur.close()
