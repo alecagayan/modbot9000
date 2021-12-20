@@ -41,6 +41,8 @@ class Dm(commands.Cog):
                         embed.add_field(name=user + ' has filed a report!', value=report, inline=True)
                         embed.set_footer(text='Filed on ' + str(datetime.datetime.now()))
                         await reportchannel.send(embed=embed)
+                        await reportchannel.send("<@&731214145101496390>")
+
                         
                         await message.channel.send("Anonymous report sent!")
 
@@ -51,6 +53,7 @@ class Dm(commands.Cog):
                         embed.add_field(name=user + ' has filed a report!', value=report, inline=True)
                         embed.set_footer(text='Filed on ' + str(datetime.datetime.now()))
                         await reportchannel.send(embed=embed)
+                        await reportchannel.send("<@&731214145101496390>")
 
                         await message.channel.send("Report sent!")
 
