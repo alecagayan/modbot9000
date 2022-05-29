@@ -92,8 +92,8 @@ class Warnings(commands.Cog):
             with open('./data/json/elevated.json') as f:
                 data = json.load(f)
 
-            if user.id in data["elevated-members"]:
-                await user.send(embed=embed)
+            if ctx.author.id in data["elevated-members"]:
+                await ctx.author.send(embed=embed)
 
         db.commit()
         cur.close()
